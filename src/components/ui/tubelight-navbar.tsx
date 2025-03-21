@@ -16,6 +16,7 @@ interface NavItem {
   url: string
   icon: React.ReactElement
   subItems?: NavSubItem[]
+  onClick?: (e: React.MouseEvent) => void
 }
 
 interface NavBarProps {
@@ -31,6 +32,18 @@ export function NavBar({ items, className }: NavBarProps) {
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
+    // Check the current path and set the active tab accordingly
+    const path = window.location.pathname;
+    const currentItem = items.find(item => {
+      if (path === '/' && item.url === '/') return true;
+      if (path !== '/' && item.url !== '/' && path.startsWith(item.url)) return true;
+      return false;
+    });
+    
+    if (currentItem) {
+      setActiveTab(currentItem.name);
+    }
+    
     const handleResize = () => {
       const mobile = window.innerWidth < 768
       setIsMobile(mobile)
@@ -42,7 +55,7 @@ export function NavBar({ items, className }: NavBarProps) {
     handleResize()
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
-  }, [mobileMenuOpen])
+  }, [mobileMenuOpen, items])
 
   const handleMouseEnter = (itemName: string) => {
     if (dropdownTimeoutRef.current) {
@@ -144,9 +157,13 @@ export function NavBar({ items, className }: NavBarProps) {
                     ) : (
                       <Link
                         href={item.url}
-                        onClick={() => {
-                          setActiveTab(item.name)
-                          setMobileMenuOpen(false)
+                        onClick={(e) => {
+                          if (item.onClick) {
+                            item.onClick(e);
+                          } else {
+                            setActiveTab(item.name)
+                            setMobileMenuOpen(false)
+                          }
                         }}
                         className={cn(
                           "flex items-center text-base font-semibold py-2",
@@ -209,7 +226,13 @@ export function NavBar({ items, className }: NavBarProps) {
                 ) : (
                   <Link
                     href={item.url}
-                    onClick={() => setActiveTab(item.name)}
+                    onClick={(e) => {
+                      if (item.onClick) {
+                        item.onClick(e);
+                      } else {
+                        setActiveTab(item.name);
+                      }
+                    }}
                     className={cn(
                       "flex items-center cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
                       "text-white/80 hover:text-white",

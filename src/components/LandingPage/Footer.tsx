@@ -91,14 +91,15 @@ export function Footer() {
           
           {/* Footer Sections */}
           {footerSections.map((section, index) => (
-            <div key={index}>
+            <div key={index} className="relative z-10">
               <h3 className="text-white font-semibold mb-4">{section.title}</h3>
               <ul className="space-y-3">
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
                     <Link 
                       href={link.href}
-                      className="text-white/70 hover:text-accent transition-colors"
+                      className={`text-white/70 hover:text-accent transition-colors relative z-10 ${link.label === "Webinars" ? "webinar-footer-link" : ""}`}
+                      prefetch={true}
                     >
                       {link.label}
                     </Link>

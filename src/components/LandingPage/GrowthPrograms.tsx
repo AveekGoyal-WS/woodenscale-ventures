@@ -90,6 +90,7 @@ export function GrowthPrograms() {
   const [activeStage, setActiveStage] = useState<number>(0);
   const programCardRef = useRef<HTMLDivElement>(null);
   const isInitialRender = useRef(true);
+  const [isNavigatingFromOtherPage, setIsNavigatingFromOtherPage] = useState(false);
   
   const fadeInUpVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -109,11 +110,28 @@ export function GrowthPrograms() {
     active: { scale: 1.1, boxShadow: "0 0 20px rgba(255, 196, 77, 0.5)" }
   };
   
+  // Check if user is navigating from another page
+  useEffect(() => {
+    // Get the navigation timestamp from sessionStorage
+    const lastNavTimestamp = sessionStorage.getItem('lastNavTimestamp');
+    const currentTime = Date.now();
+    
+    // If there's a timestamp and it's recent (within last 2 seconds), user came from another page
+    if (lastNavTimestamp && (currentTime - parseInt(lastNavTimestamp)) < 2000) {
+      setIsNavigatingFromOtherPage(true);
+    }
+    
+    // Reset the initial render flag
+    isInitialRender.current = true;
+  }, []);
+  
   useEffect(() => {
     // Only scroll when activeStage changes after initial render
-    if (isInitialRender.current) {
-      // Skip scrolling on initial render
+    // AND not when navigating from another page
+    if (isInitialRender.current || isNavigatingFromOtherPage) {
+      // Skip scrolling on initial render or when coming from another page
       isInitialRender.current = false;
+      setIsNavigatingFromOtherPage(false);
       return;
     }
     
@@ -124,7 +142,7 @@ export function GrowthPrograms() {
       
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
-  }, [activeStage]);
+  }, [activeStage, isNavigatingFromOtherPage]);
 
   return (
     <section className="relative py-20 md:py-28 bg-background-dark overflow-hidden">
