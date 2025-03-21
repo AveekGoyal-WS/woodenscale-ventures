@@ -233,7 +233,7 @@ export function GrowthPrograms() {
               >
                 <div className="bg-primary-800/50 backdrop-blur-sm rounded-2xl border border-primary-600 overflow-hidden shadow-xl">
                   <div className="p-8 md:p-10">
-                    <div className="flex flex-col md:flex-row md:items-start gap-8">
+                    <div className="flex flex-col md:flex-row md:items-stretch gap-8">
                       {/* Left column - Program info */}
                       <div className="md:flex-1 space-y-6">
                         <div className="flex items-center justify-between">
@@ -290,13 +290,13 @@ export function GrowthPrograms() {
                       </div>
 
                       {/* Right column - Image */}
-                      <div className="md:flex-1">
-                        <div className="relative h-64 md:h-96 rounded-xl overflow-hidden bg-white/5">
+                      <div className="md:flex-1 flex items-center justify-center">
+                        <div className="relative h-64 md:h-auto w-full" style={{ minHeight: '400px' }}>
                           <Image
                             src={program.image}
                             alt={program.title}
                             fill
-                            className="object-contain p-4"
+                            className="object-contain"
                           />
                         </div>
                       </div>
