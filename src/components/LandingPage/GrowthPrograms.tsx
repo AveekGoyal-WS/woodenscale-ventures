@@ -89,6 +89,7 @@ const programsData: ProgramInfo[] = [
 export function GrowthPrograms() {
   const [activeStage, setActiveStage] = useState<number>(0);
   const programCardRef = useRef<HTMLDivElement>(null);
+  const isInitialRender = useRef(true);
   
   const fadeInUpVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -109,7 +110,14 @@ export function GrowthPrograms() {
   };
   
   useEffect(() => {
-    // Scroll to the program card when activeStage changes
+    // Only scroll when activeStage changes after initial render
+    if (isInitialRender.current) {
+      // Skip scrolling on initial render
+      isInitialRender.current = false;
+      return;
+    }
+    
+    // Scroll to the program card when activeStage changes (but not on initial render)
     if (programCardRef.current) {
       const yOffset = -200; // Offset to account for sticky header or other elements
       const y = programCardRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
